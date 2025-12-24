@@ -2,20 +2,14 @@
 
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { zodResolver } from '@hookform/resolvers/zod';
-import Enter from '../icons/enter';
-import Loading from '../icons/loading';
-import ExternalLink from '../icons/externalLink';
-import Clipboard from '../icons/clipboard';
+import { CreateShortLinkRequest, requestSchema } from '@/types';
+import Enter from '@/icons/enter';
+import Loading from '@/icons/loading';
+import ExternalLink from '@/icons/externalLink';
+import Clipboard from '@/icons/clipboard';
 
-const schema = z.object({
-  original_url: z.string().url('Please enter a valid URL'),
-});
-
-type FormData = z.infer<typeof schema>;
-
-export default function ShortenForm() {
+export default function UrlShortenerForm() {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -24,11 +18,11 @@ export default function ShortenForm() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
+  } = useForm<CreateShortLinkRequest>({
+    resolver: zodResolver(requestSchema),
   });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: CreateShortLinkRequest) => {
     setError(null);
     setResult(null);
 
@@ -107,7 +101,12 @@ export default function ShortenForm() {
             >
               <ExternalLink height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
             </a>
-            <Clipboard height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
+            <button
+              // onClick={() => copyToClipboard(link.short_url, link.id)}
+              className="cursor-pointer"
+            >
+              <Clipboard height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
+            </button>
           </div>
         </div>
       )}

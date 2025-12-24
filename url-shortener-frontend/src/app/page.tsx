@@ -1,6 +1,6 @@
-import Image from "next/image";
-import ShortenForm from "../components/ShortenForm";
-import History from "../icons/history";
+import UrlShortenerForm from "@/components/UrlShortenerForm/UrlShortenerForm";
+import ShortLinksList from "@/components/ShortLinksList/ShortLinksList";
+import History from "@/icons/history";
 
 export default function Home() {
   return (
@@ -10,7 +10,7 @@ export default function Home() {
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight pl-2 text-black dark:text-zinc-50">
             Shorten a link.
           </h1>
-          <ShortenForm />
+          <UrlShortenerForm />
         </div>
         <div className="flex items-center gap-4 text-base font-medium w-full">
           <hr className="border-zinc-800 grow" />
@@ -23,6 +23,7 @@ export default function Home() {
             <History height={16} width={16} className={"stroke-zinc-500"} />
           </a>
         </div>
+        <ShortLinksList />
       </main>
     </div>
   );
