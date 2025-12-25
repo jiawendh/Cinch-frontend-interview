@@ -1,4 +1,5 @@
-import Copy from '@/utils/utils';
+import CopyLinkButton from '@/components/ShortLinkItem/CopyLinkButton';
+import TestLinkButton from '@/components/ShortLinkItem/TestLinkButton';
 
 export default function ShortLinkItem({ link } : any) {
   return (
@@ -9,7 +10,7 @@ export default function ShortLinkItem({ link } : any) {
             href={link.original_url}
             target="_blank"
             rel="noopener noreferrer"
-            className='block max-w-40 truncate'
+            className='block max-w-30 truncate'
           >
             {link.original_url}
           </a>
@@ -23,7 +24,7 @@ export default function ShortLinkItem({ link } : any) {
             href={link.short_url}
             target="_blank"
             rel="noopener noreferrer"
-            className='block max-w-40 truncate'
+            className='block max-w-30 truncate'
           >
             {link.short_url}
           </a>
@@ -35,8 +36,9 @@ export default function ShortLinkItem({ link } : any) {
         {new Date(link.created_at).toLocaleString()}
       </td>
 
-      <td className="p-2 text-center">
-        <Copy link={link}/>
+      <td className="p-2 text-center flex gap-1.5 min-w-50">
+        <TestLinkButton url={link.short_url} />
+        <CopyLinkButton url={link.short_url} id={link.id} />
       </td>
     </tr>
   );
