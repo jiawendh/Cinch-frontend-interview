@@ -3,7 +3,8 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateShortLinkRequest, requestSchema } from '@/types';
+import { CreateShortLinkRequest, ShortLinkRequestSchema } from '@/types';
+import { copyToClipboard } from '@/utils/utils';
 
 import Enter from '@/icons/enter';
 import Loading from '@/icons/loading';
@@ -20,7 +21,7 @@ export default function UrlShortenerForm() {
     formState: { errors, isSubmitting },
     reset,
   } = useForm<CreateShortLinkRequest>({
-    resolver: zodResolver(requestSchema),
+    resolver: zodResolver(ShortLinkRequestSchema),
   });
 
   const onSubmit = async (data: CreateShortLinkRequest) => {
@@ -39,7 +40,6 @@ export default function UrlShortenerForm() {
       }
 
       const json = await res.json();
-      console.log(json);
       setResult(json.short_url);
       reset();
     } catch (err: any) {

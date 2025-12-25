@@ -1,6 +1,6 @@
 import { z } from 'zod';
 
-export const requestSchema = z.object({
+export const ShortLinkRequestSchema = z.object({
   original_url: z.string().url('Please enter a valid URL'),
 });
 

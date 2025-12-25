@@ -12,3 +12,14 @@ export type LinkProps = {
   url: string;
   id?: string;
 };
+
+export type ShortLink = {
+  id: string;
+  original_url: string;
+  short_url: string;
+  created_at: string;
+};
+
+export type ShortLinkProps = {
+  link: ShortLink;
+}

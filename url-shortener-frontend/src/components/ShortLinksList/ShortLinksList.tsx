@@ -2,13 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import ShortLinkItem from '@/components/ShortLinkItem/ShortLinkItem';
-
-type ShortLink = {
-  id: string;
-  original_url: string;
-  short_url: string;
-  created_at: string;
-};
+import { ShortLink } from '@/types';
 
 export default function ShortLinksList() {
   const [links, setLinks] = useState<ShortLink[]>([]);
@@ -41,9 +35,12 @@ export default function ShortLinksList() {
     fetchLinks();
   }, []);
 
-  if (loading) return <p>Please wait, loading...</p>;
-  if (error) return <p className="text-red-500">{error}</p>;
-
+  if (loading) {
+    return <p className="text-zinc-500">Please wait, loading...</p>;
+  }
+  if (error) {
+    return <p className="text-red-500">{error}</p>;
+  }
   if (links.length === 0) {
     return <p className="text-zinc-500">No short links created yet.</p>;
   }
