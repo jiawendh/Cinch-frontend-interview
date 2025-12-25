@@ -5,11 +5,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CreateShortLinkRequest, ShortLinkRequestSchema } from '@/types';
 import { copyToClipboard } from '@/utils/utils';
-
-import Enter from '@/icons/enter';
-import Loading from '@/icons/loading';
-import ExternalLink from '@/icons/externalLink';
-import Clipboard from '@/icons/clipboard';
+import { Enter, Loading, ExternalLink, Clipboard } from "@/icons";
 
 export default function UrlShortenerForm() {
   const [result, setResult] = useState<string | null>(null);

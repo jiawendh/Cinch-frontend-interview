@@ -1,5 +1,5 @@
 import SmallButton from '@/components/common/SmallButton';
-import ExternalLink from '@/icons/externalLink';
+import { ExternalLink } from '@/icons';
 import { LinkProps } from '@/types';
 
 export default function TestLinkButton({ url } : LinkProps) {

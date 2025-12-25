@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { LinkProps } from '@/types';
 import { copyToClipboard } from "@/utils/utils";
-import Clipboard from '@/icons/clipboard';
+import { Clipboard } from '@/icons';
 
 export default function CopyLinkButton({ url, id } : LinkProps) {
   const [copiedId, setCopiedId] = useState<string | null>(null);

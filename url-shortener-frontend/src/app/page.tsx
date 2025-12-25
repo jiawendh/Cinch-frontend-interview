@@ -3,8 +3,7 @@
 import { useState } from "react";
 import UrlShortenerForm from "@/components/UrlShortenerForm/UrlShortenerForm";
 import ShortLinksList from "@/components/ShortLinksList/ShortLinksList";
-import History from "@/icons/history";
-import Cross from "@/icons/cross";
+import { History, Cross } from "@/icons";
 
 export default function Home() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);

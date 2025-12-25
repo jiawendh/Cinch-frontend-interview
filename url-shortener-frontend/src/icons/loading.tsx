@@ -1,6 +1,6 @@
 import { IconProps } from "@/types";
 
-const Loading = ({ height = 24, width = 24, className }: IconProps) => {
+export const Loading = ({ height = 24, width = 24, className }: IconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -24,5 +24,3 @@ const Loading = ({ height = 24, width = 24, className }: IconProps) => {
     </svg>
   );
 };
-
-export default Loading;

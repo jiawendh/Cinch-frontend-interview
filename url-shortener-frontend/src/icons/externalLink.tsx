@@ -1,6 +1,6 @@
 import { IconProps } from "@/types";
 
-const ExternalLink = ({ height = 24, width = 24, className }: IconProps) => {
+export const ExternalLink = ({ height = 24, width = 24, className }: IconProps) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -19,5 +19,3 @@ const ExternalLink = ({ height = 24, width = 24, className }: IconProps) => {
     </svg>
   );
 };
-
-export default ExternalLink;
