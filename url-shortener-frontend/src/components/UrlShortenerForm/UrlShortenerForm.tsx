@@ -4,12 +4,13 @@ import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CreateShortLinkRequest, ShortLinkRequestSchema, CreateShortLinkProps } from '@/types';
-import { copyToClipboard } from '@/utils/utils';
 import { Enter, Loading, ExternalLink, Clipboard } from "@/icons";
+import { copyToClipboard } from '@/utils/utils';
 
 export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const {
     register,
@@ -22,25 +23,28 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
 
   const onSubmit = async (data: CreateShortLinkRequest) => {
     setError(null);
-    setResult(null);
+    setLoading(true);
 
     try {
-      const res = await fetch('http://localhost:8080/api/shortlinks', {
+      const fetchPromise = fetch('http://localhost:8080/api/shortlinks', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
+      }).then(res => {
+        if (!res.ok) throw new Error('Failed to create short link');
+        else return res.json();
       });
+      const delayPromise = new Promise(resolve => setTimeout(resolve, 200));
+      const [json] = await Promise.all([fetchPromise, delayPromise]);
 
-      if (!res.ok) {
-        throw new Error('Failed to create short link');
-      }
-
-      const json = await res.json();
       setResult(json.short_url);
       onCreated(json);
       reset();
     } catch (err: any) {
+      setResult(null);
       setError(err.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -77,7 +81,7 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
       </div>
 
       {/* Feedback */}
-      <div className={"w-full min-h-12 pl-3 transition-opacity duration-500 " + (result ? "opacity-100" : "opacity-0")}>
+      <div className={"w-full min-h-12 pl-3 transition-opacity duration-500 " + (result && !loading ? "opacity-100" : "opacity-0")}>
         {result && (
           <>
             <p className="text-zinc-400">
