@@ -77,39 +77,41 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
       </div>
 
       {/* Feedback */}
-      {result && (
-        <div className="w-full pl-2 opacity-0 transition-opacity duration-500 hover:opacity-100">
-          <p className="text-zinc-400">
-            Here you go.
-          </p>
-          <div className="flex items-center gap-2 w-full">
-            <p className="text-white break-all">
+      <div className={"w-full min-h-12 pl-3 transition-opacity duration-500 " + (result ? "opacity-100" : "opacity-0")}>
+        {result && (
+          <>
+            <p className="text-zinc-400">
+              Here you go.
+            </p>
+            <div className="flex items-center gap-2 w-full">
+              <p className="text-white break-all">
+                <a
+                  href={result}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  {result}
+                </a>
+              </p>
               <a
                 href={result}
                 target="_blank"
                 rel="noopener noreferrer"
               >
-                {result}
+                <ExternalLink height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
               </a>
-            </p>
-            <a
-              href={result}
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              <ExternalLink height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
-            </a>
-            <button
-              onClick={() => copyToClipboard(result)}
-              className="cursor-pointer"
-            >
-              <Clipboard height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
-            </button>
-          </div>
-        </div>
-      )}
+              <button
+                onClick={() => copyToClipboard(result)}
+                className="cursor-pointer"
+              >
+                <Clipboard height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
+              </button>
+            </div>
+          </>
+        )}
+      </div>
 
-      {error && <p className="text-red-600">{error}</p>}
+      {error && <p className="pl-3 text-red-500">{error}</p>}
     </form>
   );
 }
