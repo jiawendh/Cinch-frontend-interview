@@ -103,7 +103,7 @@ export default function UrlShortenerForm() {
               <ExternalLink height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
             </a>
             <button
-              // onClick={() => copyToClipboard(link.short_url, link.id)}
+              onClick={() => copyToClipboard(result)}
               className="cursor-pointer"
             >
               <Clipboard height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
