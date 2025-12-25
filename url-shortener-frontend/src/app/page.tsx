@@ -4,12 +4,18 @@ import { useState } from "react";
 import UrlShortenerForm from "@/components/UrlShortenerForm/UrlShortenerForm";
 import ShortLinksList from "@/components/ShortLinksList/ShortLinksList";
 import { History, Cross } from "@/icons";
+import { ShortLink } from '@/types';
 
 export default function Home() {
   const [isHistoryOpen, setIsHistoryOpen] = useState(false);
+  const [links, setLinks] = useState<ShortLink[]>([]);
 
   const toggleHistory = () => {
     setIsHistoryOpen((prev) => !prev);
+  };
+
+  const handleNewLink = (newLink: ShortLink) => {
+    setLinks((prev) => [newLink, ...prev]);
   };
   
   return (
@@ -19,7 +25,7 @@ export default function Home() {
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight pl-2 text-black dark:text-zinc-50">
             Shorten a link.
           </h1>
-          <UrlShortenerForm />
+          <UrlShortenerForm onCreated={handleNewLink} />
         </section>
         <section className="flex items-center gap-4 text-base font-medium w-full">
           <hr className="border-zinc-800 grow" />
@@ -35,7 +41,7 @@ export default function Home() {
           </button>
         </section>
         <section className={"transition-opacity duration-300 " + (isHistoryOpen ? "opacity-100" : "opacity-0")}>
-          <ShortLinksList isOpen={isHistoryOpen} />
+          <ShortLinksList links={links} setLinks={setLinks} isOpen={isHistoryOpen} />
         </section>
       </main>
     </div>

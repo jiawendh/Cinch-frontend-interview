@@ -3,11 +3,11 @@
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CreateShortLinkRequest, ShortLinkRequestSchema } from '@/types';
+import { CreateShortLinkRequest, ShortLinkRequestSchema, CreateShortLinkProps } from '@/types';
 import { copyToClipboard } from '@/utils/utils';
 import { Enter, Loading, ExternalLink, Clipboard } from "@/icons";
 
-export default function UrlShortenerForm() {
+export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
 
@@ -37,6 +37,7 @@ export default function UrlShortenerForm() {
 
       const json = await res.json();
       setResult(json.short_url);
+      onCreated(json);
       reset();
     } catch (err: any) {
       setError(err.message);

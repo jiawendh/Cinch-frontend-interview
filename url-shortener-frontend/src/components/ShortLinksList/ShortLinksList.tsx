@@ -1,11 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { ShortLink, HistoryProps } from '@/types';
+import { HistoryProps } from '@/types';
 import ShortLinkItem from '@/components/ShortLinkItem/ShortLinkItem';
 
-export default function ShortLinksList({ isOpen }: HistoryProps) {
-  const [links, setLinks] = useState<ShortLink[]>([]);
+export default function ShortLinksList({ isOpen, links, setLinks }: HistoryProps) {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
