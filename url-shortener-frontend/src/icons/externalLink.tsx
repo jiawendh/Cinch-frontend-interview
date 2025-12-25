@@ -1,8 +1,4 @@
-interface IconProps {
-  height?: number;
-  width?: number;
-  className?: string;
-}
+import { IconProps } from "@/types";
 
 const ExternalLink = ({ height = 24, width = 24, className }: IconProps) => {
   return (
