@@ -39,7 +39,7 @@ export default function ShortLinksList({ isOpen, links, setLinks }: HistoryProps
   }, [isOpen]);
 
   if (loading) {
-    return <p className="text-zinc-500">Please wait, loading...</p>;
+    return <p className="text-zinc-500 animate-pulse">Please wait, loading...</p>;
   }
   if (error) {
     return <p className="text-red-500">{error}</p>;
