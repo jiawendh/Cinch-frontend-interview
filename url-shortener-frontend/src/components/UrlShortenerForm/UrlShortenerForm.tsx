@@ -27,19 +27,19 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="w-full">
-      <div className='flex gap-2 w-full pb-10'>
+      <div className='flex gap-2 w-full pb-2'>
         <div className='grow flex flex-col gap-2'>
+          {/* Original URL input field */}
           <input
             type="text"
             placeholder="https://example.com"
             {...register('original_url')}
             className="w-full border rounded-full px-3 py-2 transition-colors border border-solid border-white/[.145] hover:border-white/[.25]"
           />
-          {errors.original_url && (
-            <p className="text-red-500 text-sm pl-3">{errors.original_url.message}</p>
-          )}
+          <p className="text-red-500 text-sm pl-3 min-h-6">{errors.original_url && errors.original_url.message}</p>
         </div>
 
+        {/* Create short link button */}
         <button
           aria-label='create short link'
           type="submit"
@@ -51,6 +51,7 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
         </button>
       </div>
 
+      {/* Generated short link result */}
       <div className={"w-full min-h-12 pl-3 transition-opacity duration-500 " + (result && !loading ? "opacity-100" : "opacity-0")}>
         {result && (
           <>
@@ -59,9 +60,11 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
               <p className="text-white break-all">
                 <a href={result} target="_blank" rel="noopener noreferrer">{result}</a>
               </p>
+              {/* Open in new tab */}
               <a href={result} target="_blank" rel="noopener noreferrer">
                 <ExternalLink height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
               </a>
+              {/* Copy to clipboard */}
               <button onClick={() => copyToClipboard(result)} className="cursor-pointer">
                 <Clipboard height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
               </button>
