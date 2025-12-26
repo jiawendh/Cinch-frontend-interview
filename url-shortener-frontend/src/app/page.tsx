@@ -21,6 +21,7 @@ export default function Home() {
   return (
     <div className="flex min-h-screen items-center justify-center font-sans bg-black">
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-center pt-15 sm:pt-20 pb-10 px-8 sm:px-16 gap-y-5 bg-black sm:items-start">
+        {/* Enter original URL */}
         <section className="flex flex-col w-full items-center gap-6 sm:pt-30 sm:items-start text-zinc-400">
           <h1 className="text-left w-full text-3xl font-semibold leading-10 tracking-tight pl-2 text-zinc-50">
             Shorten a link.
@@ -40,6 +41,7 @@ export default function Home() {
             }
           </button>
         </section>
+        {/* History list */}
         <section className={"h-70 w-full overflow-y-auto transition-opacity duration-300 " + (isHistoryOpen ? "opacity-100" : "opacity-0")}>
           <ShortLinksList links={links} setLinks={setLinks} isOpen={isHistoryOpen} />
         </section>

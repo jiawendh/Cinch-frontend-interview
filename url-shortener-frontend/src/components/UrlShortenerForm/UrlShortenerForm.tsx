@@ -65,7 +65,7 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
                 <ExternalLink height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
               </a>
               {/* Copy to clipboard */}
-              <button onClick={() => copyToClipboard(result)} className="cursor-pointer">
+              <button onClick={(e) => { e.preventDefault(); copyToClipboard(result); }} className="cursor-pointer">
                 <Clipboard height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
               </button>
             </div>
