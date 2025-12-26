@@ -69,6 +69,7 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
 
         {/* Submit */}
         <button
+          aria-label='create short link'
           type="submit"
           disabled={isSubmitting}
           className={"w-full h-12 md:w-auto text-zinc-400 rounded-full px-5 py-2 transition-colors hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] border border-solid border-black/[.08] dark:border-white/[.145] hover:border-transparent disabled:opacity-50 cursor-pointer"}
@@ -90,6 +91,7 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
             <div className="flex items-center gap-2 w-full">
               <p className="text-white break-all">
                 <a
+                  aria-label="short url"
                   href={result}
                   target="_blank"
                   rel="noopener noreferrer"

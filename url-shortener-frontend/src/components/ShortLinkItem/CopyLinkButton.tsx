@@ -16,6 +16,7 @@ export default function CopyLinkButton({ url, id } : LinkProps) {
 
   return (
     <button
+      aria-label='copy'
       onClick={handleCopy}
       className="flex items-center justify-center gap-1 w-full min-w-19 px-2 py-1.5 text-xs text-zinc-400 rounded-full transition-colors border hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] border border-solid border-black/[.08] dark:border-white/[.145] hover:border-transparent cursor-pointer"
     >
