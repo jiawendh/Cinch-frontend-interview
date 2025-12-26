@@ -31,7 +31,7 @@ describe('ShortLinksList validation', () => {
   });
 
   // EMPTY LIST
-  it('shows loader then empty short links list', async () => {
+  it('shows empty short links list', async () => {
     (global.fetch as jest.Mock).mockResolvedValueOnce({
       ok: true,
       json: async () => [],
@@ -60,8 +60,7 @@ describe('ShortLinksList validation', () => {
       jest.advanceTimersByTime(1000);
     });
     
-      await screen.findByRole('button', { name: /copy/i })
-    );
+    await (await screen.findByRole('button', { name: /copy/i })).click();
 
     expect(navigator.clipboard.writeText).toHaveBeenCalledWith(
       mockLinks[0].short_url
