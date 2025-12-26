@@ -7,7 +7,11 @@ A Next.js + TypeScript + Tailwind CSS frontend for a URL shortener application. 
 ## Setup Instructions
 
 ```bash
-# Run terminal and go to frontend folder
+# Open terminal in project folder
+# Run backend server
+go run main.go
+
+# Open second terminal in frontend folder
 cd url-shortener-frontend
 
 # Install additional dependencies (if any)
@@ -52,7 +56,7 @@ The frontend communicates with the backend API to manage short links.
 - Documentation of how the frontend connects to the backend
 
 ### Example API request
-- Create Short Link
+#### Create Short Link
 ```bash
 POST /api/shortlinks
 Content-Type: application/json
@@ -71,7 +75,7 @@ Response
 }
 ```
 
-- Get All Short Links
+#### Get All Short Links
 ```bash
 GET /api/shortlinks
 ```
@@ -87,8 +91,8 @@ Response
 ]
 ```
 
-- Redirect to Original URL
-Redirects to the original URL in the browser.
+#### Redirect to Original URL
+- Redirects to the original URL in the browser.
 ```bash
 GET /shortlinks/abc123
 ```
@@ -97,10 +101,7 @@ GET /shortlinks/abc123
 ### Run Unit & Integration Tests
 ```bash
 # Run all tests
-npm run test
-
-# Run tests with coverage report
-npm run test:coverage
+npm test
 
 # Test production build
 npm run build
