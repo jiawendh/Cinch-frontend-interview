@@ -13,7 +13,7 @@ export default function ShortLinksList({ isOpen, links, setLinks }: HistoryProps
       setLoading(true);
       
       const fetchPromise = fetch('http://localhost:8080/api/shortlinks').then(res => {
-        if (!res.ok) throw new Error('Failed to fetch short links');
+        if (!res.ok) throw new Error('Failed to fetch short links.');
         else return res.json();
       });
       const delayPromise = new Promise(resolve => setTimeout(resolve, 1000));
@@ -27,7 +27,11 @@ export default function ShortLinksList({ isOpen, links, setLinks }: HistoryProps
       
       setLinks(sorted);
     } catch (err: any) {
-      setError(err.message);
+      if (err instanceof TypeError) {
+        setError('Network error. Please try again.');
+      } else {
+        setError(err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -39,13 +43,13 @@ export default function ShortLinksList({ isOpen, links, setLinks }: HistoryProps
   }, [isOpen]);
 
   if (loading) {
-    return <p className="text-zinc-500 animate-pulse">Please wait, loading...</p>;
+    return <p className="text-zinc-500 text-sm text-center animate-pulse">Please wait, loading...</p>;
   }
   if (error) {
-    return <p className="text-red-500">{error}</p>;
+    return <p className="text-red-500 text-sm text-center">{error}</p>;
   }
   if (links.length === 0) {
-    return <p className="text-zinc-500">No short links created yet.</p>;
+    return <p className="text-zinc-500 text-sm text-center">No short links created yet.</p>;
   }
 
   return (
@@ -56,7 +60,7 @@ export default function ShortLinksList({ isOpen, links, setLinks }: HistoryProps
             <th className="text-left p-3">Original URL</th>
             <th className="text-left p-3">Shorten URL</th>
             <th className="text-left p-3">Created On</th>
-            <th></th>
+            <th className="text-left p-3">Actions</th>
           </tr>
         </thead>
 

@@ -40,7 +40,7 @@ export default function Home() {
             }
           </button>
         </section>
-        <section className={"h-70 overflow-y-auto transition-opacity duration-300 " + (isHistoryOpen ? "opacity-100" : "opacity-0")}>
+        <section className={"h-70 w-full overflow-y-auto transition-opacity duration-300 " + (isHistoryOpen ? "opacity-100" : "opacity-0")}>
           <ShortLinksList links={links} setLinks={setLinks} isOpen={isHistoryOpen} />
         </section>
       </main>

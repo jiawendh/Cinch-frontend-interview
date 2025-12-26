@@ -31,7 +31,7 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       }).then(res => {
-        if (!res.ok) throw new Error('Failed to create short link');
+        if (!res.ok) throw new Error('Failed to create short link.');
         else return res.json();
       });
       const delayPromise = new Promise(resolve => setTimeout(resolve, 200));
@@ -42,7 +42,11 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
       reset();
     } catch (err: any) {
       setResult(null);
-      setError(err.message);
+      if (err instanceof TypeError) {
+        setError('Network error. Please try again.');
+      } else {
+        setError(err.message);
+      }
     } finally {
       setLoading(false);
     }
@@ -117,7 +121,7 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
         )}
       </div>
 
-      {error && <p className="pl-3 text-red-500">{error}</p>}
+      {error && <p className="pl-3 text-red-500 text-sm">{error}</p>}
     </form>
   );
 }
