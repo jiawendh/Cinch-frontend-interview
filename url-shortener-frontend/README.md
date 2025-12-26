@@ -1,6 +1,6 @@
 # URL Shortener Frontend
 
-A Next.js + TypeScript + Tailwind CSS frontend for a URL shortener application. This project allows users to shorten URLs, view their link history, copy links to the clipboard, and navigate to shortened URLs.
+A Next.js + TypeScript + Tailwind CSS frontend for a URL shortener application. This project allows users to shorten URLs, view their link history, copy links to the clipboard, and navigate to shortened URLs. It also support custom short URLs (slugs) with intelligent validation, profanity filtering, and suggestion generation.
 
 ---
 
@@ -37,6 +37,10 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
 - Success and error feedback messages.
 - Fully typed with TypeScript for type safety.
 - Styled using Tailwind CSS with responsive design.
+- Custom short URLs (slugs) support with
+  - intelligent validation,
+  - profanity filtering,
+  - and related suggestion generation
 
 ### Video Example
 Video
@@ -44,6 +48,9 @@ Video
 ## Step-by-Step User Flow
 - Open the app in the browser at http://localhost:3000.
 - Enter an original URL in the input field.
+  - Check the custom slug checkbox to input custom short link.
+  - Enter custom short link in the input field.
+  - Verify that custom short link is available and valid.
 - Click the enter button.
 - New short link is generated with option to open in new tab or to copy url to clipboard.
 - Click the history icon to view the new short link in the history table below.
@@ -53,25 +60,140 @@ Video
 
 ## API Integration
 The frontend communicates with the backend API to manage short links.
-- Documentation of how the frontend connects to the backend
+
+### Profanity Filtering (Trie-Based)
+A Trie (prefix tree) is used to efficiently detect prohibited words within a slug.
+
+This allows:
+- O(m) time complexity, where m is the length of the slug
+- Fast substring detection
+- Case-insensitive matching
+- Detection of obfuscated words (e.g. @dm1n > admin)
+
+#### Example Prohibited Words
+```bash
+[]string{
+  "admin", "administrator", "api", "root", "sys",
+  "config", "server", "system", "backend", "frontend",
+  "login", "logout", "signin", "signup", "auth",
+  "token", "jwt", "password", "secret", "superuser",
+  "test", "debug", "staging", "prod", "production",
+  "god", "null", "undefined", "void", "error", "health",
+  "ass", "fuck", "shit", "damn", "bitch",
+}
+```
+
+#### Obfuscation Handling
+Before validation, slugs are normalized:
+- 0 > o
+- 1 > i
+- @ > a
+- 3 > e
+
+Example
+```bash
+@dm1n-panel > admin-panel
+```
+
+#### Algorithm Complexity
+
+#### Example Validation Flow
+1. User types `admin`
+2. Frontend sends request to `/api/shortlinks/validate`
+3. Backend:
+  - Normalizes input
+  - Runs Trie substring match
+  - Detects prohibited content
+4. Response includes suggestions
+5. User clicks a suggestion to autofill
 
 ### Example API request
 #### Create Short Link
+Creates a short link. If custom_slug is provided, the backend validates it for availability and prohibited content.
+
 ```bash
 POST /api/shortlinks
 Content-Type: application/json
-
+```
+Request
+```bash
 {
-  "original_url": "https://example.com"
+  "original_url": "https://example.com",
+  "custom_slug": "my-link"
 }
+```
+Success Response
+```bash
+{
+  "id": "my-link",
+  "original_url": "https://example.com",
+  "short_url": "http://localhost:8080/shortlinks/my-link",
+  "created_at": "2025-12-26T12:00:00.000Z"
+}
+```
+Error Response (Slug Taken)
+```bash
+{
+  "error": "Slug 'my-link' is already taken",
+  "suggestions": [
+    "my-link-1",
+    "my-link-500",
+    "my-lnk",
+    "my-linkation"
+  ]
+}
+```
+
+#### Validate Custom Slug
+Validates a slug before creation. This endpoint checks:
+- Format rules
+- Profanity / reserved words
+- Obfuscated prohibited content
+
+```bash
+POST /api/shortlinks/validate
+```
+Request
+```bash
+{
+  "custom_slug": "my-cool-link"
+}
+```
+Valid Response
+```bash
+{
+  "valid": true,
+  "slug": "my-cool-link",
+  "reason": ""
+}
+```
+Invalid Response
+```bash
+{
+  "valid": false,
+  "slug": "admin",
+  "reason": "Contains prohibited content"
+}
+```
+
+#### Suggest Available Slugs
+Returns intelligent suggestions when a slug is unavailable or invalid.
+
+```bash
+GET /api/shortlinks/suggest?slug=desired-name
 ```
 Response
 ```bash
 {
-  "id": "1",
-  "original_url": "https://example.com",
-  "short_url": "http://localhost:8080/shortlinks/abc123",
-  "created_at": "2025-12-26T12:00:00.000Z"
+  "original": "popular",
+  "available": false,
+  "suggestions": [
+    "popular-1",
+    "popular-500",
+    "pplr",
+    "my-popular",
+    "popular-link"
+  ]
 }
 ```
 
