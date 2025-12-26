@@ -42,8 +42,10 @@ export default function Home() {
           </button>
         </section>
         {/* History list */}
-        <section className={"h-70 w-full overflow-y-auto transition-opacity duration-300 " + (isHistoryOpen ? "opacity-100" : "opacity-0")}>
-          <ShortLinksList links={links} setLinks={setLinks} isOpen={isHistoryOpen} />
+        <section className={"h-70 w-full overflow-hidden transition-opacity duration-300 " + (isHistoryOpen ? "opacity-100" : "opacity-0")}>
+          <div className="box-content h-full w-full overflow-y-scroll pr-5 pb-10">
+            <ShortLinksList links={links} setLinks={setLinks} isOpen={isHistoryOpen} />
+          </div>
         </section>
       </main>
     </div>

@@ -37,14 +37,14 @@ export default function ShortLinksList({ isOpen, links, setLinks }: HistoryProps
   }
 
   return (
-    <div className="overflow-x-auto w-full text-sm">
+    <div className="w-full text-sm">
       <table className="w-full">
-        <thead className="text-zinc-300">
+        <thead className="text-xs md:text-sm text-zinc-300">
           <tr>
-            <th className="text-left p-3">Original URL</th>
-            <th className="text-left p-3">Shorten URL</th>
-            <th className="text-left p-3">Created On</th>
-            <th className="text-left p-3">Actions</th>
+            <th className="text-left p-2 md:p-3">Original URL</th>
+            <th className="text-left p-2 md:p-3">Shorten URL</th>
+            <th className="text-left p-2 md:p-3">Created On</th>
+            <th className="text-left p-2 md:p-3">Actions</th>
           </tr>
         </thead>
 
