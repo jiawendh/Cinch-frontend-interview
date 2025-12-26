@@ -38,12 +38,9 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
 - Fully typed with TypeScript for type safety.
 - Styled using Tailwind CSS with responsive design.
 - Custom short URLs (slugs) support with
-  - intelligent validation,
-  - profanity filtering,
-  - and related suggestion generation
-
-### Video Example
-Video
+  - Intelligent validation,
+  - Profanity filtering,
+  - And related suggestion generation
 
 ## Step-by-Step User Flow
 - Open the app in the browser at http://localhost:3000.
@@ -96,16 +93,26 @@ Example
 ```
 
 #### Algorithm Complexity
+| Operation   | Complexity             |
+| ----------- | ---------------------- |
+| Insert word | O(k)                   |
+| Check slug  | O(m)                   |
+| Memory      | O(n)                   |
+
+Where:
+- k = length of prohibited word
+- m = length of input slug
+- n = total characters in word list
 
 #### Example Validation Flow
-1. User types `admin`
-2. Frontend sends request to `/api/shortlinks/validate`
-3. Backend:
+- User types `admin`
+- Frontend sends request to `/api/shortlinks/validate`
+- Backend:
   - Normalizes input
   - Runs Trie substring match
   - Detects prohibited content
-4. Response includes suggestions
-5. User clicks a suggestion to autofill
+- Response includes suggestions
+- User clicks a suggestion to autofill
 
 ### Example API request
 #### Create Short Link
@@ -214,7 +221,7 @@ Response
 ```
 
 #### Redirect to Original URL
-- Redirects to the original URL in the browser.
+Redirects to the original URL in the browser.
 ```bash
 GET /shortlinks/abc123
 ```
@@ -224,6 +231,9 @@ GET /shortlinks/abc123
 ```bash
 # Run all tests
 npm test
+
+# Test backend
+go test ./...
 
 # Test production build
 npm run build
