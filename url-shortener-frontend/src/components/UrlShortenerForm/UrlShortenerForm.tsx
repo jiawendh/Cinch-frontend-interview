@@ -14,15 +14,15 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
   const {
     register,
     handleSubmit,
+    setValue,
     formState: { errors, isSubmitting },
-    reset,
   } = useForm<CreateShortLinkRequest>({
     resolver: zodResolver(ShortLinkRequestSchema),
   });
 
   const onSubmit = async (data: CreateShortLinkRequest) => {
     await submit(data);
-    reset();
+    setValue('original_url', '');
   };
 
   return (
