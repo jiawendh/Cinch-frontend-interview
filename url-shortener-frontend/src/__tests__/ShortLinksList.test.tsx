@@ -58,10 +58,8 @@ describe('ShortLinksList validation', () => {
     render(<ShortLinksList isOpen={true} links={mockLinks} setLinks={setLinks} />);
     await act(async () => {
       jest.advanceTimersByTime(1000);
-      await Promise.resolve();
     });
     
-    await userEvent.click(
       await screen.findByRole('button', { name: /copy/i })
     );
 
