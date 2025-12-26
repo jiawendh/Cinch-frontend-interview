@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { CreateShortLinkRequest } from '@/utils/validation';
 import { createShortlink } from '@/lib/api';
 
-export const useShortlinkForm = (onCreated: (data: any) => void) => {
+export const useUrlShortener = (onCreated: (data: any) => void) => {
   const [result, setResult] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);

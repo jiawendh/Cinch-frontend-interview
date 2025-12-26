@@ -5,11 +5,11 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ShortLinkRequestSchema, CreateShortLinkRequest } from '@/utils/validation';
 import { Enter, Loading, ExternalLink, Clipboard } from "@/icons";
 import { copyToClipboard } from '@/utils/copyToClipboard';
-import { useShortlinkForm } from '@/hooks/useShortlinkForm';
+import { useUrlShortener } from '@/hooks/useUrlShortener';
 import { CreateShortLinkProps } from '@/types';
 
 export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
-  const { result, error, loading, submit } = useShortlinkForm(onCreated);
+  const { result, error, loading, submit } = useUrlShortener(onCreated);
 
   const {
     register,
