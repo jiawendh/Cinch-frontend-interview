@@ -1,15 +1,20 @@
 'use client';
 
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { ShortLinkRequestSchema, CreateShortLinkRequest } from '@/utils/validation';
 import { Enter, Loading, ExternalLink, Clipboard } from "@/icons";
 import { copyToClipboard } from '@/utils/copyToClipboard';
 import { useUrlShortener } from '@/hooks/useUrlShortener';
-import { CreateShortLinkProps } from '@/types';
+import { CreateShortLinkProps, SlugValidationState } from '@/types';
+import CustomSlugForm from './CustomSlugForm';
 
 export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
   const { result, error, loading, submit } = useUrlShortener(onCreated);
+  const [useCustomSlug, setUseCustomSlug] = useState(false);
+  const [customSlug, setCustomSlug] = useState('');
+  const [slugValidation, setSlugValidation] = useState<SlugValidationState>({ status: 'idle' });
 
   const {
     register,
@@ -21,8 +26,17 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
   });
 
   const onSubmit = async (data: CreateShortLinkRequest) => {
-    await submit(data);
-    setValue('original_url', '');
+    const payload: CreateShortLinkRequest = data;
+
+    if(slugValidation.status == 'valid' || slugValidation.status == 'idle') {
+      if (useCustomSlug && customSlug && customSlug.length >= 3) {
+        payload.custom_slug = customSlug;
+        setCustomSlug('');
+        setSlugValidation({ status: 'idle' });
+      }
+      await submit(payload);
+      setValue('original_url', '');
+    }
   };
 
   return (
@@ -49,6 +63,18 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
           {loading ? <Loading height={16} width={16} className='stroke-zinc-500' /> :
           <Enter height={16} width={16} className='stroke-zinc-500' />}
         </button>
+      </div>
+
+      {/* Custom slug */}
+      <div className='pl-3 pb-10'>
+        <CustomSlugForm
+          enabled={useCustomSlug}
+          customSlug={customSlug}
+          validation={slugValidation}
+          onToggle={setUseCustomSlug}
+          onSlugChange={setCustomSlug}
+          onValidationChange={setSlugValidation}
+        />
       </div>
 
       {/* Generated short link result */}

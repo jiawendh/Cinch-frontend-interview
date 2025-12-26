@@ -6,6 +6,8 @@ import (
 	"net/url"
 	"sync"
 	"time"
+	"strings"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -21,6 +23,7 @@ type ShortLink struct {
 // CreateShortLinkRequest represents the request payload for creating a short link
 type CreateShortLinkRequest struct {
 	OriginalURL string `json:"original_url" binding:"required"`
+	CustomSlug  string `json:"custom_slug"`
 }
 
 // CreateShortLinkResponse represents the response for creating a short link
@@ -41,6 +44,82 @@ var (
 	shortLinks = make(map[string]*ShortLink)
 	mutex      = sync.RWMutex{}
 )
+
+// SlugValidationRequest represents the request payload for slug verification
+type SlugValidationRequest struct {
+    CustomSlug string `json:"custom_slug" binding:"required"`
+}
+
+// Profanity or prohibited words
+var prohibitedWords = []string{
+	"admin", "administrator", "api", "root", "sys",
+    "config", "server", "system", "backend", "frontend",
+	"login", "logout", "signin", "signup", "auth",
+    "token", "jwt", "password", "secret", "superuser",
+    "test", "debug", "staging", "prod", "production",
+    "god", "null", "undefined", "void", "error", "health",
+	"ass", "fuck", "shit", "damn", "bitch",
+}
+var profanityFilter = NewProfanityFilter(prohibitedWords)
+
+type TrieNode struct {
+    children map[rune]*TrieNode
+    isEnd bool
+}
+
+type ProfanityFilter struct {
+    root *TrieNode
+}
+
+func NewProfanityFilter(words []string) *ProfanityFilter {
+    pf := &ProfanityFilter{root: &TrieNode{children: map[rune]*TrieNode{}}}
+    for _, word := range words {
+        pf.Insert(word)
+    }
+    return pf
+}
+
+func (pf *ProfanityFilter) Insert(word string) {
+    node := pf.root
+    word = strings.ToLower(word)
+    for _, r := range word {
+        if node.children[r] == nil {
+            node.children[r] = &TrieNode{children: map[rune]*TrieNode{}}
+        }
+        node = node.children[r]
+    }
+    node.isEnd = true
+}
+
+// Checks if text contains any prohibited substring
+func (pf *ProfanityFilter) Contains(text string) bool {
+    text = strings.ToLower(obfuscateText(text))
+    for i := 0; i < len(text); i++ {
+        node := pf.root
+        for j := i; j < len(text); j++ {
+            r := rune(text[j])
+            if node.children[r] == nil {
+                break
+            }
+            node = node.children[r]
+            if node.isEnd {
+                return true
+            }
+        }
+    }
+    return false
+}
+
+// Replace common obfuscations
+func obfuscateText(text string) string {
+    replacer := strings.NewReplacer(
+        "0", "o",
+        "1", "i",
+        "@", "a",
+        "3", "e",
+    )
+    return replacer.Replace(text)
+}
 
 // Generate a random short code
 func generateShortCode() string {
@@ -63,6 +142,165 @@ func isValidURL(rawURL string) bool {
 		return false
 	}
 	return u.Scheme == "http" || u.Scheme == "https"
+}
+
+// Validate slug content
+func validateSlug(c *gin.Context) {
+    var req SlugValidationRequest
+    if err := c.ShouldBindJSON(&req); err != nil {
+        c.JSON(http.StatusBadRequest, ErrorResponse{Error: "Invalid request"})
+        return
+    }
+
+    slug := sanitizeSlug(req.CustomSlug)
+
+    var reason string
+	var valid = true
+	var suggestions []string
+
+	if _, exists := shortLinks[slug]; exists {
+		reason = "Slug is already taken"
+		valid = false
+		suggestions = generateSuggestions(slug)
+	} else if profanityFilter.Contains(slug) {
+		reason = "Slug contains prohibited content"
+		valid = false
+	}
+
+	if !valid {
+		c.JSON(http.StatusOK, gin.H{
+			"valid":       false,
+			"slug":        slug,
+			"reason":      reason,
+			"suggestions": suggestions,
+		})
+		return
+	}
+
+    c.JSON(http.StatusOK, gin.H {
+        "valid": true,
+        "slug": slug,
+        "reason": "",
+    })
+}
+
+// Get slug suggestions
+func suggestSlug(c *gin.Context) {
+    desired := c.Query("slug")
+    slug := sanitizeSlug(desired)
+    available := true
+
+    mutex.RLock()
+    if _, exists := shortLinks[slug]; exists || profanityFilter.Contains(slug) {
+        available = false
+    }
+    mutex.RUnlock()
+
+    suggestions := []string{}
+    if !available {
+        suggestions = generateSuggestions(slug)
+    }
+
+    c.JSON(http.StatusOK, gin.H{
+        "original": slug,
+        "available": available,
+        "suggestions": suggestions,
+    })
+}
+
+// Generate slug suggestions
+func generateSuggestions(slug string) []string {
+	rand.Seed(time.Now().UnixNano())
+    suggestions := []string{}
+
+	// Random numeric suffixes
+	for i := 0; i < 2; i++ {
+		n := rand.Intn(10000) // 0-9999
+		suggestions = append(suggestions, slug+"-"+strconv.Itoa(n))
+	}
+
+    // Remove vowels
+    noVowels := removeVowels(slug)
+    suggestions = append(suggestions, noVowels)
+
+    // Prefix
+	prefix := []string{}
+	prefix = append(prefix, "my-", "the-", "new-")
+	for i := 0; i < 2; i++ {
+		index := rand.Intn(3) // 0-2
+		newItem := prefix[index] + slug
+		if !contains(suggestions, newItem) {
+			suggestions = append(suggestions, newItem)
+		}
+	}
+
+    // Suffix
+	suffix := []string{}
+	suffix = append(suffix, "-link", "ation", "ing")
+	for i := 0; i < 2; i++ {
+		index := rand.Intn(3) // 0-2
+		newItem :=  slug + suffix[index]
+		if !contains(suggestions, newItem) {
+			suggestions = append(suggestions, newItem)
+		}
+	}
+
+	filtered := suggestions[:0]
+	for _, s := range suggestions {
+		if len(s) >= 3 {
+			filtered = append(filtered, s)
+		}
+	}
+	suggestions = filtered
+
+    return suggestions[:5]
+}
+
+// Remove vowels helper function
+func removeVowels(s string) string {
+    return strings.Map(func(r rune) rune {
+        switch r {
+        case 'a','e','i','o','u': return -1
+        default: return r
+        }
+    }, s)
+}
+
+// Only lowercase letters, numbers, and hyphens helper function
+func sanitizeSlug(input string) string {
+    s := strings.ToLower(input)
+
+    // Replace spaces with hyphens
+    s = strings.ReplaceAll(s, " ", "-")
+
+    // Allow only a-z, 0-9, hyphens
+    var result []rune
+    for _, r := range s {
+        if (r >= 'a' && r <= 'z') ||
+            (r >= '0' && r <= '9') ||
+            r == '-' {
+            result = append(result, r)
+        }
+    }
+
+    // Remove duplicate hyphens
+    cleaned := string(result)
+    cleaned = strings.Trim(cleaned, "-")
+    cleaned = strings.Join(strings.FieldsFunc(cleaned, func(r rune) bool {
+        return r == '-'
+    }), "-")
+
+    return cleaned
+}
+
+// Check if item already exist in array helper function
+func contains(slice []string, item string) bool {
+	for _, s := range slice {
+		if s == item {
+			return true
+		}
+	}
+	return false
 }
 
 // CORS middleware
@@ -95,13 +333,39 @@ func createShortLink(c *gin.Context) {
 		return
 	}
 
-	// Generate unique short code
-	var shortCode string
 	mutex.Lock()
-	for {
-		shortCode = generateShortCode()
-		if _, exists := shortLinks[shortCode]; !exists {
-			break
+    var shortCode string
+
+    // Check custom slug uniqueness, if any
+    if req.CustomSlug != "" {
+        slug := sanitizeSlug(req.CustomSlug)
+        if _, exists := shortLinks[slug]; exists {
+            suggestions := generateSuggestions(slug)
+            c.JSON(http.StatusConflict, gin.H{
+                "error": "Slug '" + slug + "' is already taken",
+                "suggestions": suggestions,
+            })
+            return
+        }
+
+        // Check prohibited content
+        if !profanityFilter.Contains(slug) {
+            shortCode = slug
+        } else {
+            suggestions := generateSuggestions(slug)
+            c.JSON(http.StatusBadRequest, gin.H{
+                "error": "Slug contains prohibited content",
+                "suggestions": suggestions,
+            })
+            return
+        }
+    } else {
+        // Generate random unique short code as slug
+		for {
+			shortCode = generateShortCode()
+			if _, exists := shortLinks[shortCode]; !exists {
+				break
+			}
 		}
 	}
 
@@ -201,6 +465,9 @@ func main() {
 		api.POST("/shortlinks", createShortLink)
 		api.GET("/shortlinks/:id", getShortLink)
 		api.GET("/shortlinks", getAllShortLinks)
+
+		api.POST("/shortlinks/validate", validateSlug)
+    	api.GET("/shortlinks/suggest", suggestSlug)
 	}
 
 	// Redirect routes
@@ -217,6 +484,8 @@ func main() {
 	gin.DefaultWriter.Write([]byte("   GET  /api/shortlinks/:id   - Get short link details\n"))
 	gin.DefaultWriter.Write([]byte("   GET  /api/shortlinks       - Get all short links\n"))
 	gin.DefaultWriter.Write([]byte("   GET  /shortlinks/:id       - Redirect to original URL\n"))
+	gin.DefaultWriter.Write([]byte("   POST /shortlinks/validate  - Validate custom slug\n"))
+	gin.DefaultWriter.Write([]byte("   GET  /shortlinks/suggest   - Suggest variations for custom slug\n"))
 	gin.DefaultWriter.Write([]byte("   GET  /health               - Health check\n\n"))
 
 	if err := r.Run(port); err != nil {

@@ -1,6 +1,9 @@
+import { SlugValidationResponse } from "@/types";
+import { CreateShortLinkRequest } from "@/utils/validation";
+
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
 
-export const createShortlink = async (data: any) => {
+export const createShortlink = async (data: CreateShortLinkRequest) => {
   try {
     const fetchPromise = fetch(`${API_BASE_URL}/api/shortlinks`, {
       method: 'POST',
@@ -48,3 +51,19 @@ export const fetchShortlinks = async () => {
     }
   }
 };
+
+export async function validateCustomSlug(customSlug: string): Promise<SlugValidationResponse> {
+  const res = await fetch(`${API_BASE_URL}/api/shortlinks/validate`,
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ custom_slug: customSlug }),
+    }
+  );
+
+  if (!res.ok) {
+    throw new Error('Validation failed');
+  }
+
+  return res.json();
+}
