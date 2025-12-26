@@ -43,19 +43,19 @@ export default function ShortLinksList({ isOpen, links, setLinks }: HistoryProps
   }, [isOpen]);
 
   if (loading) {
-    return <p className="text-zinc-500 text-sm text-center animate-pulse">Please wait, loading...</p>;
+    return <p className="text-zinc-500 text-sm sm:text-center pl-3 animate-pulse">Please wait, loading...</p>;
   }
   if (error) {
-    return <p className="text-red-500 text-sm text-center">{error}</p>;
+    return <p className="text-red-500 text-sm sm:text-center pl-3">{error}</p>;
   }
   if (links.length === 0) {
-    return <p className="text-zinc-500 text-sm text-center">No short links created yet.</p>;
+    return <p className="text-zinc-500 text-sm sm:text-center pl-3">No short links created yet.</p>;
   }
 
   return (
     <div className="overflow-x-auto w-full text-sm">
       <table className={"w-full"}>
-        <thead className="">
+        <thead className="text-zinc-300">
           <tr>
             <th className="text-left p-3">Original URL</th>
             <th className="text-left p-3">Shorten URL</th>

@@ -64,7 +64,7 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
             type="text"
             placeholder="https://example.com"
             {...register('original_url')}
-            className="w-full border rounded-full px-3 py-2 transition-colors border border-solid border-black/[.08] dark:border-white/[.145] hover:border-white/[.145] dark:hover:border-white/[.25]"
+            className="w-full border rounded-full px-3 py-2 transition-colors border border-solid border-white/[.145] hover:border-white/[.25]"
           />
           {errors.original_url && (
             <p className="text-red-500 text-sm pl-3">{errors.original_url.message}</p>
@@ -76,7 +76,7 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
           aria-label='create short link'
           type="submit"
           disabled={isSubmitting}
-          className={"w-full h-12 md:w-auto text-zinc-400 rounded-full px-5 py-2 transition-colors hover:bg-black/[.04] dark:hover:bg-[#1a1a1a] border border-solid border-black/[.08] dark:border-white/[.145] hover:border-transparent disabled:opacity-50 cursor-pointer"}
+          className={"h-12 text-zinc-400 rounded-full px-5 py-2 transition-colors hover:bg-[#1a1a1a] border border-solid border-white/[.145] hover:border-transparent cursor-pointer"}
         >
           {isSubmitting ?
             <Loading height={16} width={16} className='stroke-zinc-500' /> :

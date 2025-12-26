@@ -19,10 +19,10 @@ export default function Home() {
   };
   
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-center pt-32 pb-10 px-16 gap-y-5 bg-zinc-50 dark:bg-black sm:items-start">
-        <section className="flex flex-col w-full items-center gap-6 pt-40 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight pl-2 text-black dark:text-zinc-50">
+    <div className="flex min-h-screen items-center justify-center font-sans bg-black">
+      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-center sm:pt-32 pb-10 px-8 sm:px-16 gap-y-5 bg-black sm:items-start">
+        <section className="flex flex-col w-full items-center gap-6 sm:pt-40 sm:items-start text-zinc-400">
+          <h1 className="text-left w-full text-3xl font-semibold leading-10 tracking-tight pl-2 text-zinc-50">
             Shorten a link.
           </h1>
           <UrlShortenerForm onCreated={handleNewLink} />
