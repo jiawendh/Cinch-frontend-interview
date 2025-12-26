@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { LinkProps } from '@/types';
-import { copyToClipboard } from "@/utils/utils";
+import { copyToClipboard } from "@/utils/copyToClipboard";
 import { Clipboard } from '@/icons';
 
 export default function CopyLinkButton({ url, id } : LinkProps) {

@@ -5,7 +5,8 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { CreateShortLinkRequest, ShortLinkRequestSchema, CreateShortLinkProps } from '@/types';
 import { Enter, Loading, ExternalLink, Clipboard } from "@/icons";
-import { copyToClipboard } from '@/utils/utils';
+import { copyToClipboard } from '@/utils/copyToClipboard';
+import { API_BASE_URL } from '@/lib/api';
 
 export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
   const [result, setResult] = useState<string | null>(null);
@@ -26,7 +27,7 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
     setLoading(true);
 
     try {
-      const fetchPromise = fetch('http://localhost:8080/api/shortlinks', {
+      const fetchPromise = fetch(`${API_BASE_URL}/api/shortlinks`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),

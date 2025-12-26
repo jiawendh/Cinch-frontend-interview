@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { HistoryProps } from '@/types';
+import { API_BASE_URL } from '@/lib/api';
 import ShortLinkItem from '@/components/ShortLinkItem/ShortLinkItem';
 
 export default function ShortLinksList({ isOpen, links, setLinks }: HistoryProps) {
@@ -12,7 +13,7 @@ export default function ShortLinksList({ isOpen, links, setLinks }: HistoryProps
     try {
       setLoading(true);
       
-      const fetchPromise = fetch('http://localhost:8080/api/shortlinks').then(res => {
+      const fetchPromise = fetch(`${API_BASE_URL}/api/shortlinks`).then(res => {
         if (!res.ok) throw new Error('Failed to fetch short links.');
         else return res.json();
       });
