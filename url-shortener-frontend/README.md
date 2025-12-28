@@ -43,7 +43,7 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
   - And related suggestion generation
 
 ### Loom Video
-https://www.loom.com/share/96bc65e9e35540898c4e01d0abad18f8
+https://www.loom.com/share/2e4227a7a2884362b730b266f7fd2ed5
 
 ### Step-by-Step User Flow
 - Open the app in the browser at http://localhost:3000.
