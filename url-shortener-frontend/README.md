@@ -232,6 +232,9 @@ GET /shortlinks/abc123
 # Run all tests
 npm test
 
+# Test backend
+go test ./...
+
 # Test production build
 npm run build
 ```
