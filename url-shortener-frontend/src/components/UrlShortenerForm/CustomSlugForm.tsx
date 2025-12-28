@@ -1,7 +1,7 @@
 'use client';
 
 import { useSlugValidation } from '@/hooks/useSlugValidation';
-import { CustomSlugFormProps, SlugValidationState } from '@/types';
+import { CustomSlugFormProps } from '@/types';
 import CustomSlugSuggestion from './CustomSlugSuggestion';
 
 export default function CustomSlugForm({

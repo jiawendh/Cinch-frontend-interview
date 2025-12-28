@@ -71,7 +71,11 @@ func createShortLink(c *gin.Context) {
     if req.CustomSlug != "" {
         slug := validator.SanitizeSlug(req.CustomSlug)
         if _, exists := types.ShortLinks[slug]; exists {
-            suggestions := validator.GenerateSuggestions(slug)
+            suggestions := validator.GenerateSuggestions(
+				slug,
+				types.ShortLinks,
+				validator.ProfanityFilterVar,
+			)
             c.JSON(http.StatusConflict, gin.H{
                 "error": "Slug '" + slug + "' is already taken",
                 "suggestions": suggestions,
@@ -83,7 +87,11 @@ func createShortLink(c *gin.Context) {
         if !validator.ProfanityFilterVar.Contains(slug) {
             shortCode = slug
         } else {
-            suggestions := validator.GenerateSuggestions(slug)
+            suggestions := validator.GenerateSuggestions(
+				slug,
+				types.ShortLinks,
+				validator.ProfanityFilterVar,
+			)
             c.JSON(http.StatusBadRequest, gin.H{
                 "error": "Slug contains prohibited content",
                 "suggestions": suggestions,

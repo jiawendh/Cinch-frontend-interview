@@ -50,7 +50,11 @@ func ValidateSlugLogic(
 		return ValidationResult{
 			Valid: false,
 			Reason: "\"" + slug + "\" is already taken",
-			Suggestions: GenerateSuggestions(slug),
+			Suggestions: GenerateSuggestions(
+				slug,
+				types.ShortLinks,
+				ProfanityFilterVar,
+			),
 		}
 	}
 
@@ -92,7 +96,11 @@ func SuggestSlug(c *gin.Context) {
 
     suggestions := []string{}
     if !available {
-        suggestions = GenerateSuggestions(slug)
+		suggestions = GenerateSuggestions(
+			slug,
+			types.ShortLinks,
+			ProfanityFilterVar,
+		)
     }
 
     c.JSON(http.StatusOK, gin.H{
@@ -103,49 +111,66 @@ func SuggestSlug(c *gin.Context) {
 }
 
 // Generate slug suggestions
-func GenerateSuggestions(slug string) []string {
+func GenerateSuggestions(
+	slug string,
+	shortLinks map[string]*types.ShortLink,
+	profanity ProfanityChecker,
+) []string {
 	rand.Seed(time.Now().UnixNano())
     suggestions := []string{}
+	maxLen := 5
+	used := make(map[string]bool)
+	remaining := func() int { return maxLen - len(suggestions) }
+
+	// Helper to add unique suggestion
+	used[slug] = true
+    add := func(item string) {
+        if len(item) < 3 || profanity.Contains(item) || used[item] {
+            return
+        }
+
+		if _, exists := shortLinks[item]; exists {
+			return
+		}
+
+        if len(suggestions) < maxLen {
+            suggestions = append(suggestions, item)
+            used[item] = true
+        }
+    }
 
 	// Random numeric suffixes
-	for i := 0; i < 2; i++ {
-		n := rand.Intn(10000) // 0-9999
-		suggestions = append(suggestions, slug+"-"+strconv.Itoa(n))
+	for i := 0; i < rand.Intn(remaining()) + 1; i++ {
+		num := rand.Intn(10000) // 0-9999
+		add(slug + "-" + strconv.Itoa(num))
 	}
 
-    // Remove vowels
-    noVowels := RemoveVowels(slug)
-    suggestions = append(suggestions, noVowels)
-
     // Prefix
-	prefix := []string{}
-	prefix = append(prefix, "my-", "the-", "new-")
-	for i := 0; i < 2; i++ {
-		index := rand.Intn(3) // 0-2
-		newItem := prefix[index] + slug
-		if !Contain(suggestions, newItem) {
-			suggestions = append(suggestions, newItem)
+	if(remaining() > 0) {
+		prefixes := []string{"my-", "the-", "new-", "my", "the", "new"}
+		for i := 0; i < rand.Intn(remaining()) + 1; i++ {
+			index := rand.Intn(len(prefixes))
+			add(prefixes[index] + slug)
 		}
 	}
 
     // Suffix
-	suffix := []string{}
-	suffix = append(suffix, "-link", "ation", "ing")
-	for i := 0; i < 2; i++ {
-		index := rand.Intn(3) // 0-2
-		newItem :=  slug + suffix[index]
-		if !Contain(suggestions, newItem) {
-			suggestions = append(suggestions, newItem)
+	if(remaining() > 0) {
+		suffixes := []string{"-link", "link", "-url", "url", "-page"}
+		for i := 0; i < remaining(); i++ {
+			index := rand.Intn(len(suffixes))
+			add(slug + suffixes[index])
 		}
 	}
 
-	filtered := suggestions[:0]
-	for _, s := range suggestions {
-		if len(s) >= 3 {
-			filtered = append(filtered, s)
-		}
-	}
-	suggestions = filtered
+    // Remove vowels
+	add(RemoveVowels(slug))
 
-    return suggestions[:5]
+	// Replace characters
+	add(ReplaceCharacters(slug))
+
+	if len(suggestions) > maxLen {
+		return suggestions[:maxLen]
+	}
+	return suggestions
 }

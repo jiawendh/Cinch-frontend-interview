@@ -1,7 +1,9 @@
 package validator
 
 import (
+    "math/rand"
 	"strings"
+    "time"
 )
 
 // Profanity or prohibited words
@@ -61,9 +63,43 @@ func ObfuscateText(text string) string {
         "0", "o",
         "1", "i",
         "@", "a",
+        "4", "a",
         "3", "e",
     )
     return replacer.Replace(text)
+}
+
+// Replace characters
+func ReplaceCharacters(text string) string {
+    rand.Seed(time.Now().UnixNano())
+
+    replacements := map[rune]rune{
+        'o': '0',
+        'i': '1',
+        'a': '4',
+        'e': '3',
+        't': '7',
+    }
+
+    runes := []rune(text)
+    indexes := []int{}
+
+    // Collect all indexes that can be replaced
+    for i, r := range runes {
+        if _, ok := replacements[r]; ok {
+            indexes = append(indexes, i)
+        }
+    }
+
+    if len(indexes) == 0 {
+        return text // Nothing to replace
+    }
+
+    // Pick random index to replace
+    index := indexes[rand.Intn(len(indexes))]
+    runes[index] = replacements[runes[index]]
+
+    return string(runes)
 }
 
 // Remove vowels
