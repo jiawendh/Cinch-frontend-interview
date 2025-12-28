@@ -39,8 +39,11 @@ func TestRemoveVowels(t *testing.T) {
 }
 
 func TestGenerateSuggestions_BasicRules(t *testing.T) {
+	shortLinks := map[string]*types.ShortLink{}
+	profanity := mockProfanityFilter{blocked: false}
 	slug := "example"
-	suggestions := validator.GenerateSuggestions(slug)
+
+	suggestions := validator.GenerateSuggestions(slug, shortLinks, profanity)
 
 	if len(suggestions) == 0 {
 		t.Fatal("expected suggestions, got none")
@@ -64,8 +67,11 @@ func TestGenerateSuggestions_BasicRules(t *testing.T) {
 }
 
 func TestGenerateSuggestions_RandomSuffixFormat(t *testing.T) {
+	shortLinks := map[string]*types.ShortLink{}
+	profanity := mockProfanityFilter{blocked: false}
 	slug := "test"
-	suggestions := validator.GenerateSuggestions(slug)
+
+	suggestions := validator.GenerateSuggestions(slug, shortLinks, profanity)
 
 	foundNumeric := false
 	for _, s := range suggestions {
