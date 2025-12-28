@@ -87,12 +87,23 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
                 <a href={result} target="_blank" rel="noopener noreferrer">{result}</a>
               </p>
               {/* Open in new tab */}
-              <a href={result} target="_blank" rel="noopener noreferrer">
-                <ExternalLink height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
+              <a
+                href={result}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="p-1.5 rounded-full hover:bg-zinc-800 cursor-pointer"
+              >
+                <ExternalLink height={16} width={16} className='stroke-zinc-500' />
               </a>
               {/* Copy to clipboard */}
-              <button onClick={(e) => { e.preventDefault(); copyToClipboard(result); }} className="cursor-pointer">
-                <Clipboard height={16} width={16} className='stroke-zinc-500 cursor-pointer' />
+              <button
+                onClick={(e) => {
+                  e.preventDefault();
+                  copyToClipboard(result);
+                }}
+                className="p-1.5 rounded-full hover:bg-zinc-800 cursor-pointer"
+              >
+                <Clipboard height={16} width={16} className='stroke-zinc-500' />
               </button>
             </div>
           </>
