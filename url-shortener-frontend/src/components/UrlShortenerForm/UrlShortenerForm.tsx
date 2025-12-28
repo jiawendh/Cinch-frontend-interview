@@ -66,7 +66,7 @@ export default function UrlShortenerForm({ onCreated }: CreateShortLinkProps) {
       </div>
 
       {/* Custom slug */}
-      <div className='pl-3 pb-10'>
+      <div className='pb-10'>
         <CustomSlugForm
           enabled={useCustomSlug}
           customSlug={customSlug}
