@@ -18,8 +18,8 @@ export default function ShortLinkItem({ link }: ShortLinkProps) {
         {new Date(link.created_at).toLocaleString()}
       </td>
 
-      <td className="p-2 min-w-50">
-        <div className="text-center flex gap-1.5">
+      <td className="p-2">
+        <div className="text-center flex gap-1.5 min-w-50 pr-5 sm:pr-0">
           <TestLinkButton url={link.short_url} />
           <CopyLinkButton url={link.short_url} id={link.id} />
         </div>
