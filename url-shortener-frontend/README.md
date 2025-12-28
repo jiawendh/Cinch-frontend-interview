@@ -21,7 +21,7 @@ npm install
 npm run dev
 ```
 
-## Environment Configuration
+### Environment Configuration
 
 ```bash
 # .env.local example
@@ -42,7 +42,10 @@ NEXT_PUBLIC_API_BASE_URL=http://localhost:8080
   - Profanity filtering,
   - And related suggestion generation
 
-## Step-by-Step User Flow
+### Loom Video
+https://www.loom.com/share/96bc65e9e35540898c4e01d0abad18f8
+
+### Step-by-Step User Flow
 - Open the app in the browser at http://localhost:3000.
 - Enter an original URL in the input field.
   - Check the custom slug checkbox to input custom short link.
