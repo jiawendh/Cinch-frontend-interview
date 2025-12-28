@@ -31,6 +31,7 @@ export type CustomSlugFormProps = {
 };
 
 export type CustomSlugSuggestionsProps = {
+  slug: string;
   suggestions: string[];
   onSlugChange: (slug: string) => void;
   onValidationChange: (state: SlugValidationState) => void;
@@ -39,5 +40,11 @@ export type CustomSlugSuggestionsProps = {
 export type SlugValidationResponse = | { valid: true } | {
   valid: false;
   reason: string;
+  suggestions?: string[];
+};
+
+export type SlugSuggestionResponse = {
+  available: false;
+  original: string;
   suggestions?: string[];
 };

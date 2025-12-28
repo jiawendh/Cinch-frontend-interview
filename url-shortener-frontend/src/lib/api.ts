@@ -1,4 +1,4 @@
-import { SlugValidationResponse } from "@/types";
+import { SlugSuggestionResponse, SlugValidationResponse } from "@/types";
 import { CreateShortLinkRequest } from "@/utils/validation";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8080';
@@ -25,7 +25,7 @@ export const createShortlink = async (data: CreateShortLinkRequest) => {
       throw err;
     }
   }
-};
+}
 
 export const fetchShortlinks = async () => {
   try {
@@ -50,20 +50,48 @@ export const fetchShortlinks = async () => {
       throw err;
     }
   }
-};
+}
 
 export async function validateCustomSlug(customSlug: string): Promise<SlugValidationResponse> {
-  const res = await fetch(`${API_BASE_URL}/api/shortlinks/validate`,
-    {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ custom_slug: customSlug }),
+  try {
+    const res = await fetch(`${API_BASE_URL}/api/shortlinks/validate`,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ custom_slug: customSlug }),
+      }
+    );
+
+    if (!res.ok) {
+      throw new Error('Validation failed');
     }
-  );
 
-  if (!res.ok) {
-    throw new Error('Validation failed');
+    return res.json();
+  } catch (err: any) {
+    if (err instanceof TypeError) {
+      throw new Error('Network error. Please try again.');
+    } else {
+      throw err;
+    }
   }
+}
 
-  return res.json();
+export async function suggestSlug(customSlug: string): Promise<SlugSuggestionResponse> {
+  try {
+    const fetchPromise = await fetch(`${API_BASE_URL}/api/shortlinks/suggest?slug=${customSlug}`).then(res => {
+      if (!res.ok) throw new Error('Failed to fetch short links.');
+      return res.json();
+    });
+
+    const delayPromise = new Promise(resolve => setTimeout(resolve, 400));
+    const [json] = await Promise.all([fetchPromise, delayPromise]);
+
+    return json;
+  } catch (err: any) {
+    if (err instanceof TypeError) {
+      throw new Error('Network error. Please try again.');
+    } else {
+      throw err;
+    }
+  }
 }

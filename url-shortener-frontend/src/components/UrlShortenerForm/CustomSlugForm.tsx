@@ -60,7 +60,7 @@ export default function CustomSlugForm({
 
             {/* Suggestions */}
             {validation.status === 'invalid' && validation.suggestions && validation.suggestions.length > 0 && (
-              <CustomSlugSuggestion suggestions={validation.suggestions} onSlugChange={onSlugChange} onValidationChange={onValidationChange} />
+              <CustomSlugSuggestion slug={customSlug} suggestions={validation.suggestions} onSlugChange={onSlugChange} onValidationChange={onValidationChange} />
             )}
 
             {/* Criteria */}
