@@ -13,7 +13,7 @@ export function useSlugValidation({
   useEffect(() => {
     if (!enabled) return;
 
-    if (slug.length < 3) {
+    if (!slug || slug.trim().length < 3) {
       onChange({ status: 'idle' });
       return;
     }
@@ -23,7 +23,6 @@ export function useSlugValidation({
     const timeout = setTimeout(async () => {
       try {
         const data = await validateCustomSlug(slug);
-
         if (data.valid) {
           onChange({ status: 'valid' });
         } else {
