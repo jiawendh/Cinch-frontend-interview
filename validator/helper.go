@@ -19,30 +19,46 @@ var prohibitedWords = []string{
 var ProfanityFilterVar = NewProfanityFilter(prohibitedWords)
 
 func NewProfanityFilter(words []string) *ProfanityFilter {
-    pf := &ProfanityFilter{root: &TrieNode{children: map[rune]*TrieNode{}}}
-    for _, word := range words {
-        pf.Insert(word)
+    pf := &ProfanityFilter{
+        root: &TrieNode{
+            children: make(map[rune]*TrieNode),
+        },
     }
+
+    for _, word := range words {
+        pf.root.Insert(word)
+    }
+
     return pf
 }
 
-func (pf *ProfanityFilter) Insert(word string) {
-    node := pf.root
-    word = strings.ToLower(word)
-    for _, r := range word {
-        if node.children[r] == nil {
-            node.children[r] = &TrieNode{children: map[rune]*TrieNode{}}
-        }
-        node = node.children[r]
-    }
-    node.isEnd = true
+func (p *ProfanityFilter) Insert(word string) {
+    p.root.Insert(word)
 }
 
-// Checks if text contains any prohibited substring
-func (pf *ProfanityFilter) Contains(text string) bool {
+func (p *ProfanityFilter) Contains(text string) bool {
+    return p.root.Contains(text)
+}
+
+// Inserts word into filter
+func (t *TrieNode) Insert(word string) {
+    current := t
+    for _, char := range strings.ToLower(word) {
+        if current.children[char] == nil {
+            current.children[char] = &TrieNode{
+                children: make(map[rune]*TrieNode),
+            }
+        }
+        current = current.children[char]
+    }
+    current.isEnd = true
+}
+
+// Checks if text contains a certain substring
+func (t *TrieNode) Contains(text string) bool {
     text = strings.ToLower(ObfuscateText(text))
     for i := 0; i < len(text); i++ {
-        node := pf.root
+        node := t
         for j := i; j < len(text); j++ {
             r := rune(text[j])
             if node.children[r] == nil {
@@ -79,6 +95,9 @@ func ReplaceCharacters(text string) string {
         'a': '4',
         'e': '3',
         't': '7',
+        's': '5',
+        'b': '8',
+        'g': '6',
     }
 
     runes := []rune(text)
