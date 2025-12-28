@@ -30,6 +30,12 @@ export type CustomSlugFormProps = {
   onValidationChange: (state: SlugValidationState) => void;
 };
 
+export type CustomSlugSuggestionsProps = {
+  suggestions: string[];
+  onSlugChange: (slug: string) => void;
+  onValidationChange: (state: SlugValidationState) => void;
+};
+
 export type SlugValidationResponse = | { valid: true } | {
   valid: false;
   reason: string;

@@ -1,7 +1,8 @@
 'use client';
 
 import { useSlugValidation } from '@/hooks/useSlugValidation';
-import { CustomSlugFormProps } from '@/types';
+import { CustomSlugFormProps, SlugValidationState } from '@/types';
+import CustomSlugSuggestion from './CustomSlugSuggestion';
 
 export default function CustomSlugForm({
   enabled,
@@ -59,24 +60,7 @@ export default function CustomSlugForm({
 
             {/* Suggestions */}
             {validation.status === 'invalid' && validation.suggestions && validation.suggestions.length > 0 && (
-              <>
-                <p className="text-sm text-zinc-400 mb-1">Try these instead:</p>
-                <div className="flex flex-wrap gap-2">
-                  {validation.suggestions.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => {
-                        onSlugChange(s);
-                        onValidationChange({ status: 'idle' });
-                      }}
-                      type="button"
-                      className="px-3 py-1 text-sm rounded-full border cursor-pointer"
-                    >
-                      {s}
-                    </button>
-                  ))}
-                </div>
-              </>
+              <CustomSlugSuggestion suggestions={validation.suggestions} onSlugChange={onSlugChange} onValidationChange={onValidationChange} />
             )}
 
             {/* Criteria */}
